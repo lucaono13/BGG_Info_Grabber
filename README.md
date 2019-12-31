@@ -7,5 +7,5 @@ Python code written to use BoardGameGeek's API2 to grab relevant info for person
   1) Using ranked list from: [BGG Historical Rankings](https://github.com/beefsack/bgg-ranking-historicals)
 2) Select certain games from searched list in order to add to export file
      1) Be able to select games from search and then repeat without restarting program
-3) Create GUI
+3) Create GUI *(plan to use Kivy)*
 4) Add any additional functionality *(will be clarified more after GUI v1 completed)*
