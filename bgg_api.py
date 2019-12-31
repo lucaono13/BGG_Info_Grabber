@@ -4,9 +4,7 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 from datetime import datetime
 from time import sleep
-
-# Input boardgame IDs from www.boardgamegeek.com
-#game_ids_1 = [9209,70323,199561]
+import csv
 
 #Empty list for input
 game_ids = []
@@ -20,7 +18,7 @@ for i in range(0,n):
     game_ids.append(ele)
 
 # Creates board games DF
-boardgames = pd.DataFrame(columns =['Name','Categories','Designer(s)','Mechanics','Min. Players','Max Players','BGG Rank','BGG Score','Complexity','Playtime','Owner','Year','Expansions Avail.','Expansion Names','Image','Link'])
+boardgames = pd.DataFrame(columns =['Name','Categories','Mechanics','Min. Players','Max Players','BGG Rank','BGG Score','Complexity','Playtime','Owner','Year','Expansions Avail.','Expansion Names','Image','Link'])
 print("\nEmpty DF Created!\n")
 
 print("Starting board game entry...\n")
@@ -113,8 +111,11 @@ for id in range(len(game_ids)):
     # creates a time range with mintime and maxtime
     time = mintime + "-" + maxtime + " min"
 
+    owners = input("Who owns " + name + "?: ")
+
+
     # appends data to the created DF
-    boardgames = boardgames.append({'Name':name,'Year':year,'Categories':categories,'Designer(s)':designers,'Mechanics':mechanisms,'Min. Players':min_play,'Max Players':max_play,'BGG Rank':rank,'BGG Score':score,'Complexity':weight,'Playtime':time,'Expansions Avail.':expan_c,'Expansion Names':expan,'Link':url,'Image':img},ignore_index=True)
+    boardgames = boardgames.append({'Name':name,'Year':year,'Categories':categories,'Mechanics':mechanisms,'Min. Players':min_play,'Max Players':max_play,'BGG Rank':rank,'BGG Score':score,'Complexity':weight,'Playtime':time,'Owner':owners,'Expansions Avail.':expan_c,'Expansion Names':expan,'Link':url,'Image':img},ignore_index=True)
     # get current time
     time = datetime.now()
     ct = time.strftime("%H:%M:%S")
@@ -125,7 +126,7 @@ for id in range(len(game_ids)):
 
     #Downloads box art
     name2 = name.replace(":"," -")
-    print("Downloading image of " + name + " box art.\n")
+    print("     Downloading image of " + name + " box art.\n")
     pic = requests.get(img, stream = True)
     imgname = "Box Art\\" + name2 + "_art.jpg"
     with open(imgname, 'wb') as f:
@@ -134,17 +135,26 @@ for id in range(len(game_ids)):
     sleep(5)
 
 
-print("\nAll board games added.\nAll images downloaded to 'Box' Folder.")
+print("\nAll board games added.\nAll images downloaded to 'Box Art' Folder.")
 
 # Gets current time in order to make make .csv file
 now = datetime.now()
 dt_string = now.strftime("%m-%d-%Y_%H-%M")
 
 # creates filename that has date and time created in the name
-filename = "boardgames_" + dt_string +".csv"
-boardgames.to_csv(filename, index=False, encoding="utf-8-sig")
+filename = "Exported_DF\\boardgames_" + dt_string +".csv"
+
+# Creating string list from certain columns
+boardgames['Categories'] = [', '.join(map(str,l)) for l in boardgames['Categories']]
+boardgames['Mechanics'] = [', '.join(map(str,l)) for l in boardgames['Mechanics']]
+boardgames['Expansion Names'] = [', '.join(map(str,l)) for l in boardgames['Expansion Names']]
+
+boardgames.to_csv(filename, index=False, encoding="utf-8-sig", quoting=csv.QUOTE_MINIMAL)
 print("New .csv file created!")
 
 print(".csv file name: " + filename + "\n")
 
 print("Done!")
+
+sleep(20)
+#exit()
